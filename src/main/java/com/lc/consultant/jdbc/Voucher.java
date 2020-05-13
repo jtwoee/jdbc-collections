@@ -1,9 +1,13 @@
 package com.lc.consultant.jdbc;
 
-import java.util.Date;
+import java.time.Instant;
 import java.util.Objects;
 
 public class Voucher {
+
+    public Voucher() {
+
+    }
 
     public int getId() {
         return id;
@@ -29,11 +33,11 @@ public class Voucher {
         this.creator = creator;
     }
 
-    public Date getCreatedDate() {
+    public Instant getCreatedDate() {
         return createdDate;
     }
 
-    public void setCreatedDate(Date createdDate) {
+    public void setCreatedDate(Instant createdDate) {
         this.createdDate = createdDate;
     }
 
@@ -53,7 +57,7 @@ public class Voucher {
         return Objects.hash(id, voucherNo, creator, createdDate);
     }
 
-    public Voucher(int id, String voucherNo, String creator, Date createdDate) {
+    public Voucher(int id, String voucherNo, String creator, Instant createdDate) {
         this.id = id;
         this.voucherNo = voucherNo;
         this.creator = creator;
@@ -76,6 +80,6 @@ public class Voucher {
 
     private String creator;
 
-    private Date createdDate;
+    private Instant createdDate;
 
 }
