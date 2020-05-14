@@ -7,6 +7,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 public class VoucherDAO extends BaseDAO{
 
@@ -47,7 +48,21 @@ public class VoucherDAO extends BaseDAO{
         return voucherDetails;
     }
 
-    public List getVoucherDetailsWithProjectAccount(){
+    public List getVoucherDetailsGroupData(){
+
+        //no need for header??
+        String sql = "SELECT detail.voucher_no,  sum(detail.credit_amount) credit_amount, sum(detail.debt_amount) debt_amount\n" +
+                " FROM voucher header\n" +
+                "inner join voucher_detail detail\n" +
+                "on header.voucher_no = detail.voucher_no group by detail.voucher_no";
+
+        List voucherDetails = jdbcTemplate.query(sql, new Object[]{}, new VoucherDimensionGroupRowMapper());
+
+        return voucherDetails;
+    }
+
+
+    public List<Map<String, Object>> getVoucherDetailsWithProjectAccount(){
 
         String sql = "SELECT header.voucher_no, header.creator, header.created_date,\n" +
                 "detail.seq, detail.account_no, detail.comments,detail.credit_amount, detail.debt_amount,\n" +
@@ -58,7 +73,23 @@ public class VoucherDAO extends BaseDAO{
                 "left join project_account project\n" +
                 "on detail.voucher_no = project.voucher_no and detail.seq = project.seq";
 
-        List list = jdbcTemplate.queryForList(sql);
+        List<Map<String, Object>> list = jdbcTemplate.queryForList(sql);
+
+        return list;
+    }
+
+    public List<VoucherDimension> getVoucherDetailsWithProjectAccountAsMapper(){
+
+        String sql = "SELECT header.voucher_no, header.creator, header.created_date,\n" +
+                "detail.seq, detail.account_no, detail.comments,detail.credit_amount, detail.debt_amount,\n" +
+                "project.id, project.dimension_type, project.dimension_code, project.dimension_name\n" +
+                " FROM voucher header\n" +
+                "inner join voucher_detail detail\n" +
+                "on header.voucher_no = detail.voucher_no\n" +
+                "left join project_account project\n" +
+                "on detail.voucher_no = project.voucher_no and detail.seq = project.seq";
+
+        List<VoucherDimension> list = jdbcTemplate.query(sql, new Object[]{}, new VoucherDimensionRowMapper());
 
         return list;
     }
